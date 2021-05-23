@@ -20,6 +20,7 @@ func main() {
 	r.GET("/login", renderLoginPage)
 	r.GET("/groupchat/list", renderGetJoinedGroupchats)
 	r.GET("/groupchat/explore", renderExplorePage)
+	r.GET("/profile", renderProfilePage)
 	r.Static("/css", "./css")
 	r.Run(":80")
 }
@@ -55,12 +56,20 @@ func renderGetJoinedGroupchats(c *gin.Context) {
 	})
 }
 
-func renderExplorePage(c *gin.Context)  {
+func renderExplorePage(c *gin.Context) {
 	c.HTML(http.StatusOK, "explore.html", gin.H{
-		"title":	"Explore Group",
-		"host":		host,
+		"title":        "Explore Group",
+		"host":         host,
 		"account_host": backendHost,
 		"gc_host":      groupchatBackendHost,
+	})
+}
 
+func renderProfilePage(c *gin.Context) {
+	c.HTML(http.StatusOK, "profile.html", gin.H{
+		"title":        "Profile",
+		"host":         host,
+		"account_host": backendHost,
+		"gc_host":      groupchatBackendHost,
 	})
 }

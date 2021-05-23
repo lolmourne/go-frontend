@@ -119,6 +119,12 @@
             let msgReceived
             try {
                 msgReceived = JSON.parse(evt.data)
+
+                if (msgReceived.chats != undefined) {
+                    initMessages(msgReceived.chats)
+                    return
+                }
+
             } catch (e) {
                 return
             }
@@ -134,7 +140,6 @@
                 $(textTemplate).find(".user-prof-pic").attr("src", msgReceived.profile_pic)
             }
 
-
             let d = new Date();
             var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             let dateStr = d.getHours() + ":" + d.getMinutes() + " | " + months[d.getMonth()] + " " + d.getFullYear()
@@ -146,6 +151,33 @@
 
             $("#chat-box").append(textTemplate)
         };
+    }
+
+    function initMessages(chats) {
+        chats.forEach(element => {
+            let textTemplate;
+            let jwtToken = getCookie("access_token")
+            let parsedJWT = parseJwt(jwtToken)
+
+            if (element.user_id == parsedJWT.user_id) {
+                textTemplate = $("#receiver-msg-template").clone();
+            } else {
+                textTemplate = $("#sender-msg-template").clone();
+                $(textTemplate).find(".user-prof-pic").attr("src", element.profile_pic)
+            }
+
+
+            let d = new Date();
+            var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            let dateStr = d.getHours() + ":" + d.getMinutes() + " | " + months[d.getMonth()] + " " + d.getFullYear()
+
+            $(textTemplate).removeAttr("id")
+            $(textTemplate).find(".text-message").html(element.msg)
+            $(textTemplate).find(".date-received").html(dateStr)
+            $(textTemplate).show()
+
+            $("#chat-box").append(textTemplate)
+        });
     }
 
     /*
